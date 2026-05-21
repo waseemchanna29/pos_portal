@@ -23,15 +23,23 @@ class DashboardController extends Controller
 
     public function admin()
     {
-        $outlet = auth()->user()->outlet;
+        $outletId = auth()->user()->outlet_id;
+        $outlet   = auth()->user()->outlet;
 
         $stats = [
-            'salesmen' => User::where('role', 'salesman')
-                              ->where('outlet_id', auth()->user()->outlet_id)
-                              ->count(),
+            'salesmen'   => User::where('role', 'salesman')->where('outlet_id', $outletId)->count(),
+            'categories' => \App\Models\Category::where('outlet_id', $outletId)->count(),
+            'products'   => \App\Models\Product::where('outlet_id', $outletId)->count(),
+            'active_products' => \App\Models\Product::where('outlet_id', $outletId)->where('is_active', true)->count(),
         ];
 
-        return view('admin.dashboard', compact('stats', 'outlet'));
+        $recentProducts = \App\Models\Product::with('category')
+            ->where('outlet_id', $outletId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'outlet', 'recentProducts'));
     }
 
     public function salesman()

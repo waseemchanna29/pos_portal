@@ -10,8 +10,15 @@ class Outlet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'address', 'city', 'province',
-        'phone', 'ntn', 'strn', 'is_active', 'created_by'
+        'name',
+        'address',
+        'city',
+        'province',
+        'phone',
+        'ntn',
+        'strn',
+        'is_active',
+        'created_by'
     ];
 
     protected $casts = ['is_active' => 'boolean'];
@@ -34,5 +41,15 @@ class Outlet extends Model
     public function getProvinceLabelAttribute(): string
     {
         return $this->province ?? '—';
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

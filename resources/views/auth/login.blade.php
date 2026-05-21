@@ -33,4 +33,14 @@
             <i class="fas fa-sign-in-alt"></i> Sign In
         </button>
     </form>
+     {{-- DEV ONLY: Remove before going live --}}
+    <div class="alert alert-info" style="margin-top:1.5rem;">
+        <div>
+            <i class="fas fa-info-circle"></i>
+            <strong>Development Credentials</strong>
+            <ul style="margin-top:0.5rem; padding-left:1.2rem; font-size:0.88rem;">
+                <li><strong>Super Admin</strong> — superadmin@pos.com / superadmin@1234</li>
+            </ul>
+        </div>
+    </div>
 @endsection

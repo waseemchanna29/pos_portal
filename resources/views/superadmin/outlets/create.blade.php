@@ -38,7 +38,7 @@
                         <label class="form-label">City <span>*</span></label>
                         <select name="city" class="form-select {{ $errors->has('city') ? 'is-invalid' : '' }}">
                             <option value="">— Select City —</option>
-                            @foreach(['Karachi','Lahore','Islamabad','Rawalpindi','Faisalabad','Multan','Peshawar','Quetta','Sialkot','Gujranwala','Hyderabad','Sukkur','Bahawalpur','Sargodha','Abbottabad'] as $city)
+                            @foreach(['Karachi','Lahore','Larkana','Islamabad','Rawalpindi','Faisalabad','Multan','Peshawar','Quetta','Sialkot','Gujranwala','Hyderabad','Sukkur','Bahawalpur','Sargodha','Abbottabad'] as $city)
                                 <option value="{{ $city }}" {{ old('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
                             @endforeach
                         </select>
