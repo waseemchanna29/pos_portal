@@ -58,7 +58,7 @@ return new class extends Migration
                 'terminated_at',
                 'termination_note',
                 'deleted_at',
-            ]);F
+            ]);
         });
     }
 };

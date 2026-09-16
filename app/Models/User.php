@@ -1,17 +1,19 @@
 <?php
+// Project path: app/Models/User.php
 
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -62,12 +64,26 @@ class User extends Authenticatable
     {
         return $this->role === 'salesman';
     }
+    public function isBooker(): bool
+    {
+        return $this->role === 'booker';
+    }
+
+    /**
+     * True for any role that operates inside a subscribed outlet
+     * (i.e. everyone except super admin) — used by EnsureSubscriptionActive.
+     */
+    public function belongsToOutletSubscription(): bool
+    {
+        return ! $this->isSuperAdmin();
+    }
 
     public function getRoleBadgeClass(): string
     {
         return match ($this->role) {
             'superadmin' => 'badge-superadmin',
             'admin'      => 'badge-admin',
+            'booker'     => 'badge-booker',
             default      => 'badge-salesman',
         };
     }
@@ -77,6 +93,7 @@ class User extends Authenticatable
         return match ($this->role) {
             'superadmin' => 'Super Admin',
             'admin'      => 'Admin',
+            'booker'     => 'Booker',
             default      => 'Salesman',
         };
     }
