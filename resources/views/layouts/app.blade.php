@@ -44,16 +44,7 @@
                     </a>
                     <a href="{{ route('superadmin.users.index') }}"
                         class="sidebar-nav-link {{ request()->routeIs('superadmin.users.*') ? 'active' : '' }}">
-                        <i class="fas fa-users"></i> Users
-                    </a>
-                    <div class="sidebar-section-label">Catalogue</div>
-                    <a href="{{ route('superadmin.categories.index') }}"
-                        class="sidebar-nav-link {{ request()->routeIs('superadmin.categories.*') ? 'active' : '' }}">
-                        <i class="fas fa-tags"></i> Categories
-                    </a>
-                    <a href="{{ route('superadmin.products.index') }}"
-                        class="sidebar-nav-link {{ request()->routeIs('superadmin.products.*') ? 'active' : '' }}">
-                        <i class="fas fa-box"></i> Products
+                        <i class="fas fa-user-shield"></i> Admins
                     </a>
                 @endif
 
@@ -73,6 +64,11 @@
                         class="sidebar-nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                         <i class="fas fa-box"></i> Products
                     </a>
+                    <div class="sidebar-section-label">Inventory</div>
+                    <a href="{{ route('admin.purchase-orders.index') }}"
+                        class="sidebar-nav-link {{ request()->routeIs('admin.purchase-orders.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-invoice"></i> Purchase Orders
+                    </a>
                     <div class="sidebar-section-label">Users</div>
                     <a href="{{ route('admin.salesmen.index') }}"
                         class="sidebar-nav-link {{ request()->routeIs('admin.salesmen.*') ? 'active' : '' }}">
@@ -86,6 +82,15 @@
                     <a href="{{ route('salesman.dashboard') }}"
                         class="sidebar-nav-link {{ request()->routeIs('salesman.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <div class="sidebar-section-label">Sales</div>
+                    <a href="{{ route('salesman.pos.index') }}"
+                        class="sidebar-nav-link {{ request()->routeIs('salesman.pos.*') ? 'active' : '' }}">
+                        <i class="fas fa-cash-register"></i> POS
+                    </a>
+                    <a href="{{ route('salesman.bookings.index') }}"
+                        class="sidebar-nav-link {{ request()->routeIs('salesman.bookings.*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i> Bookings
                     </a>
                 @endif
 

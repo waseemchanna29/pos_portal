@@ -12,10 +12,14 @@ class UserController extends Controller
 {
     public function __construct(protected UserService $service) {}
 
+    /**
+     * SuperAdmin manages only admin-role users.
+     * Salesmen are managed by their outlet's admin.
+     */
     public function index()
     {
         $users = $this->service->list([
-            'roles'  => ['admin', 'salesman'],
+            'roles'  => ['admin'],
             'search' => request('search'),
         ]);
 
@@ -30,16 +34,25 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateUser($request);
+        $validated = $request->validate([
+            'name'      => ['required', 'string', 'max:100'],
+            'email'     => ['required', 'email', 'unique:users,email'],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'phone'     => ['nullable', 'string', 'max:20'],
+            'password'  => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
         try {
-            $this->service->create($validated);
+            $this->service->create([
+                ...$validated,
+                'role' => 'admin',
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage())->withInput();
         }
 
         return redirect()->route('superadmin.users.index')
-                         ->with('success', 'User created successfully.');
+                         ->with('success', 'Admin account created successfully.');
     }
 
     public function edit(User $user)
@@ -50,17 +63,23 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $validated = $this->validateUser($request, $user->id);
+        $validated = $request->validate([
+            'name'      => ['required', 'string', 'max:100'],
+            'email'     => ['required', 'email', 'unique:users,email,' . $user->id],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'phone'     => ['nullable', 'string', 'max:20'],
+            'password'  => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
 
         try {
             $this->service->authorize(auth()->user(), $user);
-            $this->service->update($user, $validated);
+            $this->service->update($user, array_merge($validated, ['role' => 'admin']));
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage())->withInput();
         }
 
         return redirect()->route('superadmin.users.index')
-                         ->with('success', 'User updated successfully.');
+                         ->with('success', 'Admin updated successfully.');
     }
 
     public function destroy(User $user)
@@ -73,7 +92,7 @@ class UserController extends Controller
         }
 
         return redirect()->route('superadmin.users.index')
-                         ->with('success', 'User deleted successfully.');
+                         ->with('success', 'Admin deleted successfully.');
     }
 
     public function toggleStatus(User $user)
@@ -86,18 +105,6 @@ class UserController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        return back()->with('success', "User {$label} successfully.");
-    }
-
-    private function validateUser(Request $request, ?int $ignoreId = null): array
-    {
-        return $request->validate([
-            'name'      => ['required', 'string', 'max:100'],
-            'email'     => ['required', 'email', 'unique:users,email,' . ($ignoreId ?? 'NULL')],
-            'role'      => ['required', 'in:admin,salesman'],
-            'outlet_id' => ['required', 'exists:outlets,id'],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'password'  => [$ignoreId ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
-        ]);
+        return back()->with('success', "Admin {$label} successfully.");
     }
 }

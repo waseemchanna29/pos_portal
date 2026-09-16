@@ -5,14 +5,17 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\Outlet;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class OutletController extends Controller
 {
+    public function __construct(protected UserService $userService) {}
+
     public function index()
     {
-        $outlets = Outlet::with('createdBy')
-                         ->withCount('users')
+        $outlets = Outlet::withCount('users')
+                         ->with('admin')
                          ->latest()
                          ->paginate(15);
 
@@ -21,7 +24,6 @@ class OutletController extends Controller
 
     public function create()
     {
-        $admins = User::where('role', 'admin')->whereNull('outlet_id')->orWhere('role', 'admin')->get();
         return view('superadmin.outlets.create');
     }
 
@@ -47,9 +49,11 @@ class OutletController extends Controller
 
     public function show(Outlet $outlet)
     {
-        $outlet->load('users', 'createdBy');
-        $admin = $outlet->users()->where('role', 'admin')->first();
-        return view('superadmin.outlets.show', compact('outlet', 'admin'));
+        $outlet->load('createdBy');
+        $admin    = $outlet->users()->where('role', 'admin')->first();
+        $salesmen = $outlet->users()->where('role', 'salesman')->get();
+
+        return view('superadmin.outlets.show', compact('outlet', 'admin', 'salesmen'));
     }
 
     public function edit(Outlet $outlet)
@@ -91,6 +95,47 @@ class OutletController extends Controller
     {
         $outlet->update(['is_active' => !$outlet->is_active]);
         $label = $outlet->is_active ? 'activated' : 'deactivated';
+
         return back()->with('success', "Outlet {$label} successfully.");
+    }
+
+    /**
+     * Assign an admin user to this outlet.
+     * Unassigns the previous admin first if one exists.
+     */
+    public function assignAdmin(Request $request, Outlet $outlet)
+    {
+        $request->validate([
+            'admin_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $newAdmin = User::findOrFail($request->admin_id);
+
+        if ($newAdmin->role !== 'admin') {
+            return back()->with('error', 'Selected user is not an admin.');
+        }
+
+        // Unassign current admin from this outlet
+        User::where('outlet_id', $outlet->id)
+            ->where('role', 'admin')
+            ->update(['outlet_id' => null]);
+
+        // Assign new admin
+        $newAdmin->update(['outlet_id' => $outlet->id]);
+
+        return back()->with('success', "Admin {$newAdmin->name} assigned to {$outlet->name} successfully.");
+    }
+
+    /**
+     * AJAX: return admins not yet assigned to any outlet.
+     */
+    public function availableAdmins()
+    {
+        $admins = User::where('role', 'admin')
+                      ->whereNull('outlet_id')
+                      ->orderBy('name')
+                      ->get(['id', 'name', 'email']);
+
+        return response()->json($admins);
     }
 }

@@ -6,7 +6,7 @@
 <div class="page-header">
     <div>
         <div class="page-header-title">{{ $outlet->name }}</div>
-        <div class="page-header-sub">Outlet Details</div>
+        <div class="page-header-sub">{{ $outlet->city }}, {{ $outlet->province }}</div>
     </div>
     <div style="display:flex; gap:0.6rem;">
         <a href="{{ route('superadmin.outlets.edit', $outlet) }}" class="btn btn-accent">
@@ -18,6 +18,7 @@
     </div>
 </div>
 
+{{-- Outlet Info --}}
 <div class="card" style="margin-bottom:1.5rem;">
     <div class="card-header">
         <div class="card-header-title"><i class="fas fa-info-circle"></i> Outlet Information</div>
@@ -33,39 +34,92 @@
             <div><div class="info-item-label">Phone</div><div class="info-item-value">{{ $outlet->phone ?? '—' }}</div></div>
             <div><div class="info-item-label">NTN</div><div class="info-item-value">{{ $outlet->ntn ?? '—' }}</div></div>
             <div><div class="info-item-label">STRN</div><div class="info-item-value">{{ $outlet->strn ?? '—' }}</div></div>
-            <div><div class="info-item-label">Created By</div><div class="info-item-value">{{ $outlet->createdBy->name ?? '—' }}</div></div>
-            <div><div class="info-item-label">Created At</div><div class="info-item-value">{{ $outlet->created_at->format('d M Y') }}</div></div>
         </div>
-        <div class="form-group">
-            <div class="info-item-label">Full Address</div>
-            <div class="info-item-value">{{ $outlet->address }}</div>
+        <div><div class="info-item-label">Address</div><div class="info-item-value">{{ $outlet->address }}</div></div>
+    </div>
+</div>
+
+{{-- Assign Admin Panel --}}
+<div class="card" style="margin-bottom:1.5rem;">
+    <div class="card-header">
+        <div class="card-header-title"><i class="fas fa-user-shield"></i> Assigned Admin</div>
+    </div>
+    <div class="card-body">
+        @if($admin)
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <div class="topbar-avatar" style="width:48px; height:48px; font-size:1.1rem;">
+                    {{ strtoupper(substr($admin->name, 0, 1)) }}
+                </div>
+                <div>
+                    <div style="font-weight:600;">{{ $admin->name }}</div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">{{ $admin->email }}</div>
+                    @if($admin->phone)
+                    <div style="font-size:0.85rem; color:var(--text-muted);">{{ $admin->phone }}</div>
+                    @endif
+                </div>
+            </div>
+            <button onclick="document.getElementById('assignAdminForm').classList.toggle('hidden-form')"
+                    class="btn-outline btn btn-sm">
+                <i class="fas fa-exchange-alt"></i> Change Admin
+            </button>
+        </div>
+        @else
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            No admin assigned to this outlet yet.
+        </div>
+        @endif
+
+        {{-- Assign Form --}}
+        <div id="assignAdminForm" class="{{ $admin ? 'hidden-form' : '' }}" style="margin-top:1.2rem;">
+            <form action="{{ route('superadmin.outlets.assign-admin', $outlet) }}" method="POST">
+                @csrf
+                <div style="display:flex; gap:0.8rem; align-items:flex-end; flex-wrap:wrap;">
+                    <div class="form-group" style="flex:1; min-width:220px; margin-bottom:0;">
+                        <label class="form-label">Select Admin to Assign</label>
+                        <select name="admin_id" class="form-select" id="adminSelect">
+                            <option value="">— Loading admins... —</option>
+                        </select>
+                        <span class="form-text">Only unassigned admins are shown.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-bottom:0;">
+                        <i class="fas fa-user-check"></i> Assign
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+{{-- Salesmen --}}
 <div class="card">
     <div class="card-header">
-        <div class="card-header-title"><i class="fas fa-users"></i> Assigned Users ({{ $outlet->users->count() }})</div>
-        <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add User
-        </a>
+        <div class="card-header-title">
+            <i class="fas fa-users"></i> Salesmen ({{ $salesmen->count() }})
+        </div>
     </div>
     <div class="table-wrapper">
         <table class="data-table">
             <thead>
-                <tr><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Status</th></tr>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr>
             </thead>
             <tbody>
-                @forelse($outlet->users as $user)
+                @forelse($salesmen as $s)
                 <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td><span class="badge badge-{{ $user->role }}">{{ $user->role_label }}</span></td>
-                    <td>{{ $user->phone ?? '—' }}</td>
-                    <td><span class="badge {{ $user->is_active ? 'badge-active' : 'badge-inactive' }}">{{ $user->is_active ? 'Active' : 'Inactive' }}</span></td>
+                    <td>{{ $s->name }}</td>
+                    <td>{{ $s->email }}</td>
+                    <td>{{ $s->phone ?? '—' }}</td>
+                    <td>
+                        <span class="badge {{ $s->is_active ? 'badge-active' : 'badge-inactive' }}">
+                            {{ $s->is_active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:1.5rem;">No users assigned yet.</td></tr>
+                <tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:1.5rem;">
+                    No salesmen assigned yet.
+                </td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -74,7 +128,7 @@
 
 <div class="danger-zone">
     <h5><i class="fas fa-exclamation-triangle"></i> Danger Zone</h5>
-    <p>Deleting this outlet will permanently remove it. This action cannot be undone.</p>
+    <p>Deleting this outlet is permanent and cannot be undone.</p>
     <form action="{{ route('superadmin.outlets.destroy', $outlet) }}" method="POST"
           onsubmit="return confirm('Are you sure you want to delete this outlet?')">
         @csrf @method('DELETE')
@@ -83,4 +137,21 @@
         </button>
     </form>
 </div>
+
+<script>
+// Load unassigned admins via AJAX when page loads
+fetch('{{ route('superadmin.available-admins') }}')
+    .then(r => r.json())
+    .then(data => {
+        const sel = document.getElementById('adminSelect');
+        sel.innerHTML = '<option value="">— Select Admin —</option>';
+        if (data.length === 0) {
+            sel.innerHTML = '<option value="">No unassigned admins available</option>';
+            return;
+        }
+        data.forEach(a => {
+            sel.innerHTML += `<option value="${a.id}">${a.name} (${a.email})</option>`;
+        });
+    });
+</script>
 @endsection

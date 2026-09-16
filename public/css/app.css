@@ -603,3 +603,322 @@ input:checked + .toggle-track::before { transform: translateX(18px); }
 
 .product-hero-stat-value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
 .product-hero-stat-label { font-size: 0.78rem; opacity: 0.75; margin-top: 0.1rem; }
+
+
+/* ===== PURCHASE ORDER BADGES ===== */
+.badge-po-draft     { background: #e2e8f0; color: #475569; }
+.badge-po-ordered   { background: var(--warning-light); color: #664d03; }
+.badge-po-received  { background: var(--success-light); color: var(--success); }
+.badge-po-cancelled { background: var(--danger-light);  color: var(--danger); }
+
+/* ===== PO ITEMS REPEATER ===== */
+.po-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.po-items-table thead th {
+    background: var(--light);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+}
+
+.po-items-table tbody td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.po-items-table tfoot td {
+    padding: 0.8rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--primary);
+    border-top: 2px solid var(--border);
+}
+
+/* ===== HIDDEN FORM TOGGLE ===== */
+.hidden-form { display: none; }
+
+/* ===== PO SUMMARY CARD ===== */
+.po-summary {
+    background: var(--primary);
+    color: var(--white);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.po-summary-number { font-size: 1.4rem; font-weight: 700; }
+.po-summary-meta   { font-size: 0.85rem; opacity: 0.75; margin-top: 0.2rem; }
+.po-summary-amount { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+.po-summary-label  { font-size: 0.8rem; opacity: 0.75; }
+
+
+/* ===== ORDER STATUS BADGES ===== */
+.badge-status-pending    { background: #e2e8f0; color: #475569; }
+.badge-status-confirmed  { background: #dbeafe; color: #1d4ed8; }
+.badge-status-dispatched { background: #fef9c3; color: #854d0e; }
+.badge-status-delivered  { background: var(--success-light); color: var(--success); }
+.badge-status-completed  { background: #d1fae5; color: #065f46; }
+.badge-status-cancelled  { background: var(--danger-light); color: var(--danger); }
+
+/* ===== POS LAYOUT ===== */
+.pos-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 1.2rem;
+    height: calc(100vh - var(--topbar-height) - 4rem);
+}
+
+.pos-products-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pos-search-bar {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.8rem;
+}
+
+.pos-search-bar .form-control  { flex: 1; }
+.pos-search-bar .form-select   { width: 180px; flex-shrink: 0; }
+
+.pos-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.8rem;
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.pos-product-card {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: all 0.18s;
+    background: var(--white);
+}
+
+.pos-product-card:hover:not(.out-of-stock) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.pos-product-card.out-of-stock {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--light);
+}
+
+.pos-product-name  { font-weight: 600; font-size: 0.88rem; line-height: 1.3; }
+.pos-product-sku   { font-size: 0.75rem; color: var(--text-muted); }
+.pos-product-price { font-weight: 700; color: var(--primary); font-size: 0.92rem; margin-top:auto; }
+
+.pos-product-stock { font-size: 0.75rem; font-weight: 600; }
+.stock-ok          { color: var(--success); }
+.stock-low         { color: var(--warning); }
+.stock-out         { color: var(--danger); }
+
+/* ===== POS CART ===== */
+.pos-cart-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.pos-cart-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--primary);
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 2;
+}
+
+.pos-cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+    min-height: 120px;
+}
+
+.pos-cart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+.pos-cart-empty i { font-size: 2rem; opacity: 0.3; margin-bottom: 0.6rem; }
+
+.pos-cart-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 0.8rem;
+    margin-bottom: 0.5rem;
+    background: var(--light);
+}
+
+.pos-cart-item-info     { margin-bottom: 0.3rem; }
+.pos-cart-item-name     { font-weight: 600; font-size: 0.88rem; }
+.pos-cart-item-sku      { font-size: 0.75rem; color: var(--text-muted); }
+
+.pos-cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pos-qty-input {
+    width: 60px;
+    padding: 0.3rem 0.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    text-align: center;
+    outline: none;
+}
+
+.pos-qty-input:focus { border-color: var(--primary); }
+
+.pos-cart-item-price {
+    flex: 1;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--primary);
+}
+
+.pos-remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.88rem;
+    border-radius: 4px;
+}
+
+.pos-remove-btn:hover { background: var(--danger-light); }
+
+/* ===== POS TOTALS ===== */
+.pos-totals {
+    border-top: 1px solid var(--border);
+    padding: 0.8rem 1.2rem;
+    background: var(--white);
+}
+
+.pos-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    padding: 0.2rem 0;
+    color: var(--text-muted);
+}
+
+.pos-grand-total {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-top: 1.5px solid var(--border);
+    margin-top: 0.3rem;
+    padding-top: 0.4rem;
+}
+
+.pos-change-display {
+    background: var(--light);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid var(--border);
+}
+
+.pos-section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.8rem 1.2rem 0.3rem;
+    border-top: 1px solid var(--border);
+}
+
+.pos-cart-panel form {
+    padding: 0 1.2rem 1.2rem;
+}
+
+/* ===== BOOKING PRODUCT LIST ===== */
+.booking-product-list {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.booking-product-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+
+.booking-product-row:last-child { border-bottom: none; }
+.booking-product-row:hover:not(.disabled-row) { background: var(--light); }
+.booking-product-row.disabled-row { opacity: 0.5; }
+
+.booking-product-info  { flex: 1; }
+.booking-product-name  { font-weight: 600; font-size: 0.9rem; }
+.booking-product-meta  { font-size: 0.78rem; color: var(--text-muted); }
+.booking-product-stock { font-size: 0.82rem; font-weight: 600; min-width: 80px; text-align: center; }
+
+/* ===== RESPONSIVE POS ===== */
+@media (max-width: 900px) {
+    .pos-wrapper {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    .pos-product-grid { max-height: 340px; }
+}

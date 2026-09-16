@@ -22,14 +22,14 @@
         <div class="stat-icon accent"><i class="fas fa-user-tie"></i></div>
         <div>
             <div class="stat-value">{{ $stats['total_admins'] }}</div>
-            <div class="stat-label">Admins</div>
+            <div class="stat-label">Total Admins</div>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon danger"><i class="fas fa-users"></i></div>
+        <div class="stat-icon danger"><i class="fas fa-user-clock"></i></div>
         <div>
-            <div class="stat-value">{{ $stats['total_users'] }}</div>
-            <div class="stat-label">Total Users</div>
+            <div class="stat-value">{{ $stats['unassigned_admins'] }}</div>
+            <div class="stat-label">Unassigned Admins</div>
         </div>
     </div>
 </div>
@@ -46,9 +46,10 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Outlet Name</th>
+                    <th>Outlet</th>
                     <th>City</th>
-                    <th>Province</th>
+                    <th>Assigned Admin</th>
+                    <th>Users</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -59,7 +60,14 @@
                     <td>{{ $loop->iteration }}</td>
                     <td><strong>{{ $outlet->name }}</strong></td>
                     <td>{{ $outlet->city }}</td>
-                    <td>{{ $outlet->province }}</td>
+                    <td>
+                        @if($outlet->admin)
+                            <span class="badge badge-admin">{{ $outlet->admin->name }}</span>
+                        @else
+                            <span style="color:var(--text-muted); font-size:0.85rem;">— Not Assigned —</span>
+                        @endif
+                    </td>
+                    <td>{{ $outlet->users_count }}</td>
                     <td>
                         <span class="badge {{ $outlet->is_active ? 'badge-active' : 'badge-inactive' }}">
                             {{ $outlet->is_active ? 'Active' : 'Inactive' }}
@@ -72,7 +80,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:2rem;">No outlets yet.</td></tr>
+                <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:2rem;">No outlets yet.</td></tr>
                 @endforelse
             </tbody>
         </table>
