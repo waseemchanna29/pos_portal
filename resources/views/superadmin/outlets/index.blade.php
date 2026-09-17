@@ -1,15 +1,16 @@
+{{-- Project path: resources/views/superadmin/outlets/index.blade.php --}}
 @extends('layouts.app')
-@section('title', 'Outlets')
-@section('page-title', 'Outlets')
+@section('title', 'Shop Owners')
+@section('page-title', 'Shop Owners')
 
 @section('content')
 <div class="page-header">
     <div>
-        <div class="page-header-title">All Outlets</div>
-        <div class="page-header-sub">Manage all POS outlets</div>
+        <div class="page-header-title">All Shop Owners</div>
+        <div class="page-header-sub">Manage all POS shop owner accounts and subscriptions</div>
     </div>
     <a href="{{ route('superadmin.outlets.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Outlet
+        <i class="fas fa-plus"></i> Add Shop Owner
     </a>
 </div>
 
@@ -20,10 +21,8 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Address</th>
                     <th>City</th>
-                    <th>Province</th>
-                    <th>Phone</th>
+                    <th>Subscription</th>
                     <th>Users</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -34,10 +33,12 @@
                 <tr>
                     <td>{{ $outlets->firstItem() + $loop->index }}</td>
                     <td><strong>{{ $outlet->name }}</strong></td>
-                    <td>{{ $outlet->address }}</td>
                     <td>{{ $outlet->city }}</td>
-                    <td>{{ $outlet->province }}</td>
-                    <td>{{ $outlet->phone ?? '—' }}</td>
+                    <td>
+                        <span class="badge {{ $outlet->subscription_badge_class }}">
+                            {{ ucfirst($outlet->subscription_status) }} — {{ ucfirst($outlet->plan_type) }}
+                        </span>
+                    </td>
                     <td>{{ $outlet->users_count }}</td>
                     <td>
                         <span class="badge {{ $outlet->is_active ? 'badge-active' : 'badge-inactive' }}">
@@ -66,13 +67,13 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9">
+                    <td colspan="7">
                         <div class="empty-state">
                             <i class="fas fa-store"></i>
-                            <h4>No outlets yet</h4>
-                            <p>Create your first outlet to get started.</p>
+                            <h4>No shop owners yet</h4>
+                            <p>Create your first shop owner account to get started.</p>
                             <a href="{{ route('superadmin.outlets.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add Outlet
+                                <i class="fas fa-plus"></i> Add Shop Owner
                             </a>
                         </div>
                     </td>
